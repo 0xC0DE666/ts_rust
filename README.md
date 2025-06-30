@@ -1,6 +1,6 @@
 # TS-Rust
 
-## Rust-like Result and Option Types for TypeScript
+## Rust-like Result and Option Utilities for TypeScript
 
 This library provides TypeScript implementations of `Result<T, E>` and `Option<T>` types, inspired by Rust's error handling and optional value patterns. It offers a robust and expressive way to handle fallible operations and nullable values without relying on `null`, `undefined`, or traditional `try-catch` blocks.
 

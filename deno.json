@@ -1,8 +1,9 @@
 {
   "name": "@0xc0de666/ts-rust",
-  "author": "D43M0N",
-  "repo": "https://github.com/0xC0DE666/ts_rust",
+  "description": "Rust-like Result and Option Utilities for TypeScript",
   "version": "1.0.0",
+  "author": "D43M0N",
+  "repository": "https://github.com/0xC0DE666/ts_rust",
   "exports": "./mod.ts",
   "license": "MIT",
   "compilerOptions": {
