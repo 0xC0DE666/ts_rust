@@ -48,6 +48,13 @@ Deno.test("Result<T, E>", async (t) => {
       assertEquals(chained.unwrap(), "42");
     });
 
+    await t.step("should chain with and_then and return Err", () => {
+      const ok: Result<number, string> = new Ok(42);
+      const chained = ok.and_then((_v: number) => new Err("failed"));
+      assertEquals(chained.is_err(), true);
+      assertEquals(chained.unwrap_err(), "failed");
+    });
+
     await t.step("should convert to Option", () => {
       const ok: Result<number, string> = new Ok(42);
       const option = ok.ok();
@@ -150,6 +157,12 @@ Deno.test("Option<T>", async (t) => {
       const chained = some.and_then((v: number) => new Some(v.toString()));
       assertEquals(chained.is_some(), true);
       assertEquals(chained.unwrap(), "42");
+    });
+
+    await t.step("should chain with and_then and return None", () => {
+      const some = new Some(42);
+      const chained = some.and_then((_v: number) => new None());
+      assertEquals(chained.is_none(), true);
     });
 
     await t.step("should unwrap_or", () => {
