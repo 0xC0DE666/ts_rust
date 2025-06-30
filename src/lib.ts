@@ -3,25 +3,25 @@
 //
 
 interface IResult<T, E> {
-  is_ok(): this is Ok<T, E>;
-  is_err(): this is Err<E, T>;
+  isOk(): this is Ok<T, E>;
+  isErr(): this is Err<E, T>;
   ok(): Option<T>;
   err(): Option<E>;
   unwrap(): T | never;
-  unwrap_err(): E | never;
+  unwrapErr(): E | never;
   map<U>(op: (val: T) => U): Result<U, E>;
-  map_err<F>(op: (err: E) => F): Result<T, F>;
-  and_then<U>(op: (val: T) => Result<U, E>): Result<U, E>;
+  mapErr<F>(op: (err: E) => F): Result<T, F>;
+  andThen<U>(op: (val: T) => Result<U, E>): Result<U, E>;
 }
 
 export class Ok<T, E = never> implements IResult<T, E> {
   constructor(public readonly value: T) {}
 
-  is_ok(): this is Ok<T, E> {
+  isOk(): this is Ok<T, E> {
     return true;
   }
 
-  is_err(): this is Err<E, T> {
+  isErr(): this is Err<E, T> {
     return false;
   }
 
@@ -37,19 +37,19 @@ export class Ok<T, E = never> implements IResult<T, E> {
     return this.value;
   }
 
-  unwrap_err(): never {
-    throw new Error("called `unwrap_err()` on an `Ok` value");
+  unwrapErr(): never {
+    throw new Error("called `unwrapErr()` on an `Ok` value");
   }
 
   map<U>(op: (val: T) => U): Result<U, E> {
     return new Ok(op(this.value));
   }
 
-  map_err<F>(_op: (err: E) => F): Result<T, F> {
+  mapErr<F>(_op: (err: E) => F): Result<T, F> {
     return new Ok(this.value);
   }
 
-  and_then<U>(op: (val: T) => Result<U, E>): Result<U, E> {
+  andThen<U>(op: (val: T) => Result<U, E>): Result<U, E> {
     return op(this.value);
   }
 }
@@ -57,11 +57,11 @@ export class Ok<T, E = never> implements IResult<T, E> {
 export class Err<E, T = never> implements IResult<T, E> {
   constructor(public readonly error: E) {}
 
-  is_ok(): this is Ok<T, E> {
+  isOk(): this is Ok<T, E> {
     return false;
   }
 
-  is_err(): this is Err<E, T> {
+  isErr(): this is Err<E, T> {
     return true;
   }
 
@@ -77,7 +77,7 @@ export class Err<E, T = never> implements IResult<T, E> {
     throw new Error(`called \`unwrap()\` on an \`Err\` value: ${this.error}`);
   }
 
-  unwrap_err(): E {
+  unwrapErr(): E {
     return this.error;
   }
 
@@ -85,11 +85,11 @@ export class Err<E, T = never> implements IResult<T, E> {
     return new Err(this.error);
   }
 
-  map_err<F>(op: (err: E) => F): Result<T, F> {
+  mapErr<F>(op: (err: E) => F): Result<T, F> {
     return new Err(op(this.error));
   }
 
-  and_then<U>(_op: (val: T) => Result<U, E>): Result<U, E> {
+  andThen<U>(_op: (val: T) => Result<U, E>): Result<U, E> {
     return new Err(this.error);
   }
 }
@@ -119,22 +119,22 @@ export async function asyncTryCatch<T, E = Error>(
 //
 
 interface IOption<T> {
-  is_some(): this is Some<T>;
-  is_none(): this is None<T>;
+  isSome(): this is Some<T>;
+  isNone(): this is None<T>;
   unwrap(): T | never;
-  unwrap_or(default_value: T): T;
+  unwrapOr(defaultValue: T): T;
   map<U>(op: (val: T) => U): Option<U>;
-  and_then<U>(op: (val: T) => Option<U>): Option<U>;
+  andThen<U>(op: (val: T) => Option<U>): Option<U>;
 }
 
 export class Some<T> implements IOption<T> {
   constructor(public readonly value: T) {}
 
-  is_some(): this is Some<T> {
+  isSome(): this is Some<T> {
     return true;
   }
 
-  is_none(): this is None<T> {
+  isNone(): this is None<T> {
     return false;
   }
 
@@ -142,7 +142,7 @@ export class Some<T> implements IOption<T> {
     return this.value;
   }
 
-  unwrap_or(_default_value: T): T {
+  unwrapOr(_defaultValue: T): T {
     return this.value;
   }
 
@@ -150,17 +150,17 @@ export class Some<T> implements IOption<T> {
     return new Some(op(this.value));
   }
 
-  and_then<U>(op: (val: T) => Option<U>): Option<U> {
+  andThen<U>(op: (val: T) => Option<U>): Option<U> {
     return op(this.value);
   }
 }
 
 export class None<T = never> implements IOption<T> {
-  is_some(): this is Some<T> {
+  isSome(): this is Some<T> {
     return false;
   }
 
-  is_none(): this is None<T> {
+  isNone(): this is None<T> {
     return true;
   }
 
@@ -168,15 +168,15 @@ export class None<T = never> implements IOption<T> {
     throw new Error("called `unwrap()` on a `None` value");
   }
 
-  unwrap_or(default_value: T): T {
-    return default_value;
+  unwrapOr(defaultValue: T): T {
+    return defaultValue;
   }
 
   map<U>(_op: (val: T) => U): Option<U> {
     return new None();
   }
 
-  and_then<U>(_op: (val: T) => Option<U>): Option<U> {
+  andThen<U>(_op: (val: T) => Option<U>): Option<U> {
     return new None();
   }
 }

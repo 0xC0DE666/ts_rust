@@ -5,10 +5,10 @@ const res = tryCatch<number, string>(() => {
   return 1 + 1;
 });
 
-if (res.is_ok()) {
+if (res.isOk()) {
   console.log(res.unwrap());
 } else {
-  console.error("Error: " + res.unwrap_err());
+  console.error("Error: " + res.unwrapErr());
 }
 
 const asyncRes = await asyncTryCatch(async () => {
@@ -17,8 +17,8 @@ const asyncRes = await asyncTryCatch(async () => {
   });
 });
 
-if (asyncRes.is_ok()) {
+if (asyncRes.isOk()) {
   console.log(asyncRes.unwrap());
 } else {
-  console.log(asyncRes.unwrap_err());
+  console.log(asyncRes.unwrapErr());
 }
