@@ -17,7 +17,7 @@ This library provides TypeScript implementations of `Result<T, E>` and `Option<T
 Since this is a single-file library, you can directly import the necessary classes and functions into your Deno project.
 
 ```typescript
-import { Result, Ok, Err, Option, Some, None, tryCatch, asyncTryCatch } from "./src/lib.ts";
+import { Result, Ok, Err, Option, Some, None, tryCatch, asyncTryCatch } from "./mod.ts";
 ```
 
 ## API

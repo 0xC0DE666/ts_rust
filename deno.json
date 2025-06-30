@@ -1,7 +1,7 @@
 {
   "name": "@D43M0N/ts_rust",
   "version": "0.1.0",
-  "exports": "./src/lib.ts",
+  "exports": "./mod.ts",
   "compilerOptions": {
     "strict": true,
     "lib": [
