@@ -9,7 +9,7 @@ This library provides TypeScript implementations of `Result<T, E>` and `Option<T
 - **`Option<T>`**: Represents an optional value, which can be either `Some<T>` (containing a value) or `None` (containing no value).
 - **`Result<T, E>`**: Represents the result of an operation that can fail, which can be either `Ok<T>` (success, containing a value) or `Err<E>` (error, containing an error value).
 - **Type-Safe**: Leverages TypeScript's type system to ensure that you handle both success and error cases.
-- **Fluent API**: Provides a chainable, ergonomic API with methods like `map`, `and_then`, and `unwrap_or`.
+- **Fluent API**: Provides a chainable, ergonomic API with methods like `map`, `andThen`, and `unwrapOr`.
 - **Utility Functions**: Includes `tryCatch` and `asyncTryCatch` to easily convert functions that might throw exceptions into `Result` types.
 
 ## Usage
@@ -33,7 +33,7 @@ Represents the presence of a value.
 ```typescript
 const someValue: Option<number> = new Some(42);
 
-console.assert(someValue.is_some()); // true
+console.assert(someValue.isSome()); // true
 console.assert(someValue.unwrap() === 42);
 ```
 
@@ -44,18 +44,18 @@ Represents the absence of a value.
 ```typescript
 const noValue: Option<number> = new None();
 
-console.assert(noValue.is_none()); // true
+console.assert(noValue.isNone()); // true
 // noValue.unwrap(); // Throws an error
 ```
 
 #### Methods
 
-- `is_some()`: Returns `true` if the option is a `Some`.
-- `is_none()`: Returns `true` if the option is a `None`.
+- `isSome()`: Returns `true` if the option is a `Some`.
+- `isNone()`: Returns `true` if the option is a `None`.
 - `unwrap()`: Returns the value from a `Some` or throws an error if it's a `None`.
-- `unwrap_or(defaultValue: T)`: Returns the value from a `Some` or `defaultValue` if it's a `None`.
+- `unwrapOr(defaultValue: T)`: Returns the value from a `Some` or `defaultValue` if it's a `None`.
 - `map<U>(op: (val: T) => U)`: Applies a function to the contained value (if any) and returns a new `Option`.
-- `and_then<U>(op: (val: T) => Option<U>)`: Chains a function that returns an `Option` to the contained value (if any).
+- `andThen<U>(op: (val: T) => Option<U>)`: Chains a function that returns an `Option` to the contained value (if any).
 
 ### `Result<T, E>`
 
@@ -68,7 +68,7 @@ Represents a successful result.
 ```typescript
 const success: Result<number, string> = new Ok(100);
 
-console.assert(success.is_ok()); // true
+console.assert(success.isOk()); // true
 console.assert(success.unwrap() === 100);
 ```
 
@@ -79,22 +79,22 @@ Represents a failure.
 ```typescript
 const error: Result<number, string> = new Err("Something went wrong");
 
-console.assert(error.is_err()); // true
+console.assert(error.isErr()); // true
 // error.unwrap(); // Throws an error
-console.assert(error.unwrap_err() === "Something went wrong");
+console.assert(error.unwrapErr() === "Something went wrong");
 ```
 
 #### Methods
 
-- `is_ok()`: Returns `true` if the result is `Ok`.
-- `is_err()`: Returns `true` if the result is `Err`.
+- `isOk()`: Returns `true` if the result is `Ok`.
+- `isErr()`: Returns `true` if the result is `Err`.
 - `ok()`: Converts a `Result<T, E>` into an `Option<T>`.
 - `err()`: Converts a `Result<T, E>` into an `Option<E>`.
 - `unwrap()`: Returns the value from an `Ok` or throws an error if it's an `Err`.
-- `unwrap_err()`: Returns the error from an `Err` or throws an error if it's an `Ok`.
+- `unwrapErr()`: Returns the error from an `Err` or throws an error if it's an `Ok`.
 - `map<U>(op: (val: T) => U)`: Maps a `Result<T, E>` to `Result<U, E>` by applying a function to a contained `Ok` value.
-- `map_err<F>(op: (err: E) => F)`: Maps a `Result<T, E>` to `Result<T, F>` by applying a function to a contained `Err` value.
-- `and_then<U>(op: (val: T) => Result<U, E>)`: Chains a function that returns a `Result` to a contained `Ok` value.
+- `mapErr<F>(op: (err: E) => F)`: Maps a `Result<T, E>` to `Result<T, F>` by applying a function to a contained `Err` value.
+- `andThen<U>(op: (val: T) => Result<U, E>)`: Chains a function that returns a `Result` to a contained `Ok` value.
 
 ### Utility Functions
 
@@ -111,7 +111,7 @@ const result = tryCatch(() => {
   }
 });
 
-if (result.is_ok()) {
+if (result.isOk()) {
   console.log(result.unwrap());
 }
 ```
