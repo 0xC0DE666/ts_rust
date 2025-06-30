@@ -1,9 +1,10 @@
 {
-  "name": "TS-Rust",
+  "name": "@0xc0de666/ts-rust",
   "author": "D43M0N",
   "repo": "https://github.com/0xC0DE666/ts_rust",
   "version": "1.0.0",
   "exports": "./mod.ts",
+  "license": "MIT",
   "compilerOptions": {
     "strict": true,
     "lib": [
