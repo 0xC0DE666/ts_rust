@@ -1,5 +1,7 @@
 {
-  "name": "@D43M0N/ts_rust",
+  "name": "TS-Rust",
+  "author": "D43M0N",
+  "repo": "https://github.com/0xC0DE666/ts_rust",
   "version": "1.0.0",
   "exports": "./mod.ts",
   "compilerOptions": {
