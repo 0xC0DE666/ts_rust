@@ -128,6 +128,10 @@ const result = await asyncTryCatch(async () => {
   }
   return response.json();
 });
+
+if (result.isOk()) {
+  console.log(result.unwrap());
+}
 ```
 
 ## Running Tests
