@@ -12,6 +12,9 @@ interface IResult<T, E> {
   map<U>(op: (val: T) => U): Result<U, E>;
   mapErr<F>(op: (err: E) => F): Result<T, F>;
   andThen<U>(op: (val: T) => Result<U, E>): Result<U, E>;
+  expect(message: string): T;
+  unwrapOrElse(op: () => T): T;
+  match<U>(onOk: (val: T) => U, onErr: (err: E) => U): U;
 }
 
 export class Ok<T, E = never> implements IResult<T, E> {
@@ -38,7 +41,7 @@ export class Ok<T, E = never> implements IResult<T, E> {
   }
 
   unwrapErr(): never {
-    throw new Error("called `unwrapErr()` on an `Ok` value");
+    throw new Error('called `unwrapErr()` on an `Ok` value');
   }
 
   map<U>(op: (val: T) => U): Result<U, E> {
@@ -51,6 +54,18 @@ export class Ok<T, E = never> implements IResult<T, E> {
 
   andThen<U>(op: (val: T) => Result<U, E>): Result<U, E> {
     return op(this.value);
+  }
+
+  expect(_message: string): T {
+    return this.value;
+  }
+
+  unwrapOrElse(_op: () => T): T {
+    return this.value;
+  }
+
+  match<U>(onOk: (val: T) => U, _onErr: (err: E) => U): U {
+    return onOk(this.value);
   }
 }
 
@@ -92,9 +107,38 @@ export class Err<E, T = never> implements IResult<T, E> {
   andThen<U>(_op: (val: T) => Result<U, E>): Result<U, E> {
     return new Err(this.error);
   }
+
+  expect(message: string): T {
+    throw new Error(message);
+  }
+
+  unwrapOrElse(op: () => T): T {
+    return op();
+  }
+
+  match<U>(_onOk: (val: T) => U, onErr: (err: E) => U): U {
+    return onErr(this.error);
+  }
 }
 
 export type Result<T, E> = Ok<T, E> | Err<E, T>;
+
+// Factory functions for ergonomics
+export function ok<T, E = never>(value: T): Ok<T, E> {
+  return new Ok(value);
+}
+
+export function err<E, T = never>(error: E): Err<E, T> {
+  return new Err(error);
+}
+
+export function some<T>(value: T): Some<T> {
+  return new Some(value);
+}
+
+export function none<T = never>(): None<T> {
+  return new None();
+}
 
 export function tryCatch<T, E = Error>(f: () => T): Result<T, E> {
   try {
@@ -125,6 +169,12 @@ interface IOption<T> {
   unwrapOr(defaultValue: T): T;
   map<U>(op: (val: T) => U): Option<U>;
   andThen<U>(op: (val: T) => Option<U>): Option<U>;
+  expect(message: string): T;
+  unwrapOrElse(op: () => T): T;
+  match<U>(onSome: (val: T) => U, onNone: () => U): U;
+  or(other: Option<T>): Option<T>;
+  orElse(op: () => Option<T>): Option<T>;
+  flatten<U>(this: Option<Option<U>>): Option<U>;
 }
 
 export class Some<T> implements IOption<T> {
@@ -153,6 +203,30 @@ export class Some<T> implements IOption<T> {
   andThen<U>(op: (val: T) => Option<U>): Option<U> {
     return op(this.value);
   }
+
+  expect(_message: string): T {
+    return this.value;
+  }
+
+  unwrapOrElse(_op: () => T): T {
+    return this.value;
+  }
+
+  match<U>(onSome: (val: T) => U, _onNone: () => U): U {
+    return onSome(this.value);
+  }
+
+  or(_other: Option<T>): Option<T> {
+    return this;
+  }
+
+  orElse(_op: () => Option<T>): Option<T> {
+    return this;
+  }
+
+  flatten<U>(this: Some<Option<U>>): Option<U> {
+    return this.value;
+  }
 }
 
 export class None<T = never> implements IOption<T> {
@@ -165,7 +239,7 @@ export class None<T = never> implements IOption<T> {
   }
 
   unwrap(): never {
-    throw new Error("called `unwrap()` on a `None` value");
+    throw new Error('called `unwrap()` on a `None` value');
   }
 
   unwrapOr(defaultValue: T): T {
@@ -177,6 +251,30 @@ export class None<T = never> implements IOption<T> {
   }
 
   andThen<U>(_op: (val: T) => Option<U>): Option<U> {
+    return new None();
+  }
+
+  expect(message: string): T {
+    throw new Error(message);
+  }
+
+  unwrapOrElse(op: () => T): T {
+    return op();
+  }
+
+  match<U>(_onSome: (val: T) => U, onNone: () => U): U {
+    return onNone();
+  }
+
+  or(other: Option<T>): Option<T> {
+    return other;
+  }
+
+  orElse(op: () => Option<T>): Option<T> {
+    return op();
+  }
+
+  flatten<U>(this: None<Option<U>>): Option<U> {
     return new None();
   }
 }
