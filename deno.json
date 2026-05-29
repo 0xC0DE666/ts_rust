@@ -22,7 +22,7 @@
 		"fmt": "deno fmt",
 		"example:basic-result": "deno run examples/basic-result.ts",
 		"example:basic-option": "deno run examples/basic-option.ts",
-		"example:advanced": "deno run examples/advanced-pipeline.ts",
+		"example:advanced": "deno run --allow-net examples/advanced-pipeline.ts",
 		"examples": "deno task example:basic-result && deno task example:basic-option && deno task example:advanced"
 	},
 	"lint": {
@@ -36,7 +36,7 @@
 		"options": {
 			"useTabs": true,
 			"indentWidth": 4,
-			"lineWidth": 80,
+			"lineWidth": 100,
 			"singleQuote": false
 		}
 	},

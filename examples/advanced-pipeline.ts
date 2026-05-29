@@ -6,32 +6,28 @@
 // 2. Safely extract/validate fields from untrusted JSON → Option
 // 3. Build a clean, typed domain object or fail gracefully
 
-import { asyncTryCatch, none, Ok, Option, some, tryCatch } from "../mod.ts";
+import { asyncTryCatch, none, Ok, Option, Result, some, tryCatch } from "../mod.ts";
 
 interface GitHubUser {
 	login: string;
-	name: string | null;
-	company: string | null;
-	bio: string | null;
-	public_repos: number;
+	name: string;
+	company: string;
+	bio: string;
+	publicRepos: number;
 	followers: number;
 }
 
 // Helper: safely turn an unknown value into Option<string>
 function safeString(value: unknown): Option<string> {
-	return typeof value === "string" && value.trim().length > 0
-		? some(value.trim())
-		: none();
+	return typeof value === "string" && value.trim().length > 0 ? some(value.trim()) : none();
 }
 
 // Helper: safely turn unknown into Option<number>
 function safeNumber(value: unknown): Option<number> {
-	return typeof value === "number" && Number.isFinite(value)
-		? some(value)
-		: none();
+	return typeof value === "number" && Number.isFinite(value) ? some(value) : none();
 }
 
-async function fetchGitHubUser(username: string) {
+async function fetchGitHubUser(username: string): Promise<Result<any, Error>> {
 	return await asyncTryCatch(async () => {
 		const res = await fetch(`https://api.github.com/users/${username}`, {
 			headers: { "User-Agent": "ts-rust-example" },
@@ -45,7 +41,7 @@ async function fetchGitHubUser(username: string) {
 	});
 }
 
-async function buildUserProfile(username: string) {
+async function buildUserProfile(username: string): Promise<Result<GitHubUser, Error>> {
 	const fetchResult = await fetchGitHubUser(username);
 
 	if (fetchResult.isErr()) {
@@ -56,7 +52,7 @@ async function buildUserProfile(username: string) {
 
 	// Defensive parsing with Option — never trust external data blindly
 	const login = safeString(raw.login).unwrapOr(username);
-	const displayName = safeString(raw.name).unwrapOr(login);
+	const name = safeString(raw.name).unwrapOr(login);
 	const company = safeString(raw.company).unwrapOr(
 		"Independent / Open Source",
 	);
@@ -64,9 +60,9 @@ async function buildUserProfile(username: string) {
 	const publicRepos = safeNumber(raw.public_repos).unwrapOr(0);
 	const followers = safeNumber(raw.followers).unwrapOr(0);
 
-	const profile = {
+	const profile: GitHubUser = {
 		login,
-		displayName,
+		name,
 		company,
 		bio,
 		publicRepos,
@@ -82,32 +78,37 @@ async function main() {
 		"=== Advanced Example: Async HTTP + Safe Parsing Pipeline ===\n",
 	);
 
-	const profileResult = await buildUserProfile("denoland");
+	const resProfile = await buildUserProfile("denoland");
 
-	if (profileResult.isOk()) {
-		const profile = profileResult.unwrap();
-		console.log("✅ Successfully fetched and parsed GitHub profile:\n");
-		console.log(JSON.stringify(profile, null, 2));
-	} else {
-		console.error("❌ Failed to load profile:");
-		console.error(profileResult.unwrapErr());
-	}
+	resProfile.match(
+		(profile) => {
+			console.log("✅ Successfully fetched and parsed GitHub profile:\n");
+			console.log(JSON.stringify(profile, null, 2));
+		},
+		(err) => {
+			console.error("❌ Failed to load profile:");
+			console.error(err);
+		},
+	);
 
 	// Bonus: show that tryCatch also works for sync validation
-	const validation = tryCatch(() => {
+	const resValidation = tryCatch(() => {
 		if (Math.random() > 0.9) throw new Error("Random validation failure");
 		return "Validation passed";
 	});
 
 	console.log("\n--- Sync validation demo ---");
-	if (validation.isOk()) {
-		console.log("Validation result:", validation.unwrap());
-	} else {
-		console.log(
-			"Validation failed (as expected sometimes):",
-			validation.unwrapErr(),
-		);
-	}
+	resValidation.match(
+		(msg) => {
+			console.log("Validation result:", msg);
+		},
+		(msg) => {
+			console.log(
+				"Validation failed (as expected sometimes):",
+				msg,
+			);
+		},
+	);
 }
 
 if (import.meta.main) {
