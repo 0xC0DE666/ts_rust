@@ -142,7 +142,13 @@ export function none<T = never>(): None<T> {
 	return new None();
 }
 
-export function tryCatch<T, E = Error>(f: () => T): Result<T, E> {
+/**
+ * Attempts a synchronous function that may throw and returns a `Result<T, E>`.
+ *
+ * This is the recommended name.
+ * The older `tryCatch` name is kept as a deprecated alias for backward compatibility.
+ */
+export function attempt<T, E = Error>(f: () => T): Result<T, E> {
 	try {
 		return new Ok(f());
 	} catch (e) {
@@ -150,7 +156,13 @@ export function tryCatch<T, E = Error>(f: () => T): Result<T, E> {
 	}
 }
 
-export async function asyncTryCatch<T, E = Error>(
+/**
+ * Attempts an async function that may reject and returns a `Promise<Result<T, E>>`.
+ *
+ * This is the recommended name.
+ * The older `asyncTryCatch` name is kept as a deprecated alias for backward compatibility.
+ */
+export async function attemptAsync<T, E = Error>(
 	f: () => Promise<T>,
 ): Promise<Result<T, E>> {
 	try {
@@ -159,6 +171,10 @@ export async function asyncTryCatch<T, E = Error>(
 		return new Err(e as E);
 	}
 }
+
+// Deprecated aliases (kept for backward compatibility, will be removed in a future major version)
+export const tryCatch = attempt;
+export const asyncTryCatch = attemptAsync;
 
 //
 // Option

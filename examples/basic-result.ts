@@ -1,5 +1,5 @@
 // examples/basic-result.ts
-import { err, ok, tryCatch } from "../mod.ts";
+import { attempt, err, ok } from "../mod.ts";
 
 console.log("=== Basic Result with factories ===\n");
 
@@ -21,8 +21,8 @@ console.log("\n--- andThen (flatMap) ---");
 const chained = success.andThen((n) => ok(`The answer is ${n}`));
 console.log("chained.unwrap():", chained.unwrap());
 
-console.log("\n--- tryCatch helper ---");
-const risky = tryCatch(() => {
+console.log("\n--- attempt helper (preferred) ---");
+const risky = attempt(() => {
 	if (Math.random() > 0.3) {
 		return { user: "alice", id: 7 };
 	}
@@ -34,3 +34,6 @@ if (risky.isOk()) {
 } else {
 	console.error("Failed:", risky.unwrapErr());
 }
+
+console.log("\n--- (old tryCatch alias still works) ---");
+console.log("Backward compat note: tryCatch is now an alias for attempt.");

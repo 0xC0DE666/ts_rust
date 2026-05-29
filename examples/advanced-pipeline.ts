@@ -2,11 +2,11 @@
 // Realistic async HTTP + safe parsing pipeline using Result + Option.
 //
 // This demonstrates a common real-world pattern:
-// 1. Perform an async operation that can fail → asyncTryCatch
+// 1. Perform an async operation that can fail → attemptAsync
 // 2. Safely extract/validate fields from untrusted JSON → Option
 // 3. Build a clean, typed domain object or fail gracefully
 
-import { asyncTryCatch, none, Ok, Option, Result, some, tryCatch } from "../mod.ts";
+import { attempt, attemptAsync, none, Ok, Option, Result, some } from "../mod.ts";
 
 interface GitHubUser {
 	login: string;
@@ -27,8 +27,8 @@ function safeNumber(value: unknown): Option<number> {
 	return typeof value === "number" && Number.isFinite(value) ? some(value) : none();
 }
 
-async function fetchGitHubUser(username: string): Promise<Result<any, Error>> {
-	return await asyncTryCatch(async () => {
+async function fetchGitHubUser(username: string): Promise<Result<unknown, Error>> {
+	return await attemptAsync(async () => {
 		const res = await fetch(`https://api.github.com/users/${username}`, {
 			headers: { "User-Agent": "ts-rust-example" },
 		});
@@ -91,8 +91,8 @@ async function main() {
 		},
 	);
 
-	// Bonus: show that tryCatch also works for sync validation
-	const resValidation = tryCatch(() => {
+	// Bonus: show that attempt (and the old tryCatch alias) both work for sync validation
+	const resValidation = attempt(() => {
 		if (Math.random() > 0.9) throw new Error("Random validation failure");
 		return "Validation passed";
 	});
@@ -100,7 +100,7 @@ async function main() {
 	console.log("\n--- Sync validation demo ---");
 	resValidation.match(
 		(msg) => {
-			console.log("Validation result:", msg);
+			console.log("Validation result (via attempt):", msg);
 		},
 		(msg) => {
 			console.log(
@@ -109,6 +109,10 @@ async function main() {
 			);
 		},
 	);
+
+	// Old alias still works
+	const oldAlias = tryCatch(() => "still works via alias");
+	console.log("Old tryCatch alias also returned:", oldAlias.isOk());
 }
 
 if (import.meta.main) {

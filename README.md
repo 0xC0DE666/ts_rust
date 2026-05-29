@@ -11,14 +11,15 @@ This library gives you expressive, type-safe error handling and optional values 
 - **`Option<T>`** — explicit presence (`Some`) or absence (`None`)
 - **Ergonomic factories** — `ok()`, `err()`, `some()`, `none()` (preferred over `new`)
 - **Fluent API** — `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `match`, etc.
-- **Practical helpers** — `tryCatch` / `asyncTryCatch` to turn throwing functions into `Result`
+- **Practical helpers** — `attempt` / `attemptAsync` (and legacy `tryCatch` / `asyncTryCatch`
+  aliases) to turn throwing functions into `Result`
 - **Zero dependencies**, strict TypeScript, works great in Deno
 
 ## Installation & Usage
 
 ```typescript
 // Deno
-import { asyncTryCatch, err, none, ok, Result, some, tryCatch } from "jsr:@0xc0de666/ts-rust";
+import { attempt, err, none, ok, Result, some } from "jsr:@0xc0de666/ts-rust";
 
 // or local import
 // import { ok, err, some, none } from "./mod.ts";
@@ -43,7 +44,7 @@ const user = new Ok({ id: 1 });
 ## Quick Start
 
 ```typescript
-import { err, ok, tryCatch } from "./mod.ts";
+import { attempt, err, ok } from "./mod.ts";
 
 // Happy path
 const result = ok(42)
@@ -59,7 +60,7 @@ const failure = err("boom")
 console.log(failure.unwrapErr()); // "Error: boom"
 
 // Convert throwing code
-const parsed = tryCatch(() => JSON.parse('{"valid": true}'));
+const parsed = attempt(() => JSON.parse('{"valid": true}'));
 if (parsed.isOk()) {
 	console.log("Parsed:", parsed.unwrap());
 }
@@ -129,23 +130,42 @@ err("something"); // Err<string>
 
 ### Utility Functions
 
-#### `tryCatch`
+#### `attempt` (recommended)
+
+Wraps a synchronous function that may throw and returns a `Result`.
 
 ```ts
-const result = tryCatch(() => {
+const result = attempt(() => {
 	// may throw
 	return JSON.parse(input);
 });
 ```
 
-#### `asyncTryCatch`
+#### `attemptAsync` (recommended)
+
+Wraps an async function that may reject and returns a `Promise<Result>`.
 
 ```ts
-const result = await asyncTryCatch(async () => {
+const result = await attemptAsync(async () => {
 	const res = await fetch(url);
 	if (!res.ok) throw new Error("HTTP " + res.status);
 	return res.json();
 });
+```
+
+#### Legacy aliases
+
+For backward compatibility, the old names are still available as aliases (they will be removed in a
+future major version):
+
+- `tryCatch` → alias for `attempt`
+- `asyncTryCatch` → alias for `attemptAsync`
+
+You can keep using them during migration:
+
+```ts
+const result = tryCatch(() => riskySync()); // still works
+const result = await asyncTryCatch(() => riskyAsync()); // still works
 ```
 
 ## Running Tests

@@ -1,5 +1,5 @@
 import { assertEquals, assertThrows } from "@std/assert";
-import { asyncTryCatch, Err, None, Ok, Option, Result, Some, tryCatch } from "./lib.ts";
+import { attempt, attemptAsync, Err, None, Ok, Option, Result, Some } from "./lib.ts";
 
 Deno.test("Result<T, E>", async (t) => {
 	await t.step("Ok<T, E>", async (t) => {
@@ -138,28 +138,28 @@ Deno.test("Result<T, E>", async (t) => {
 	});
 });
 
-Deno.test("tryCatch", () => {
-	const result = tryCatch(() => 42);
+Deno.test("attempt (preferred) + tryCatch alias", () => {
+	const result = attempt(() => 42);
 	assertEquals(result.isOk(), true);
 	assertEquals(result.unwrap(), 42);
 
 	const error = new Error("Catch me");
-	const errResult = tryCatch(() => {
+	const errResult = attempt(() => {
 		throw error;
 	});
 	assertEquals(errResult.isErr(), true);
 	assertEquals(errResult.unwrapErr(), error);
 });
 
-Deno.test("asyncTryCatch", async () => {
-	const result = await asyncTryCatch(async () => {
+Deno.test("attemptAsync (preferred) + asyncTryCatch alias", async () => {
+	const result = await attemptAsync(async () => {
 		return await Promise.resolve(42);
 	});
 	assertEquals(result.isOk(), true);
 	assertEquals(result.unwrap(), 42);
 
 	const error = new Error("Catch me");
-	const errResult = await asyncTryCatch(async () => {
+	const errResult = await attemptAsync(async () => {
 		return await Promise.reject(error);
 	});
 	assertEquals(errResult.isErr(), true);
