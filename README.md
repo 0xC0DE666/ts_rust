@@ -2,15 +2,19 @@
 
 Rust-like `Result<T, E>` and `Option<T>` for TypeScript / Deno.
 
-This library gives you expressive, type-safe error handling and optional values without leaning on `null`/`undefined` or raw `try/catch`.
+This library gives you expressive, type-safe error handling and optional values
+without leaning on `null`/`undefined` or raw `try/catch`.
 
 ## Features
 
 - **`Result<T, E>`** — explicit success (`Ok`) or failure (`Err`)
 - **`Option<T>`** — explicit presence (`Some`) or absence (`None`)
-- **Ergonomic factories** — `ok()`, `err()`, `some()`, `none()` (preferred over `new`)
-- **Fluent API** — `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `match`, etc.
-- **Practical helpers** — `tryCatch` / `asyncTryCatch` to turn throwing functions into `Result`
+- **Ergonomic factories** — `ok()`, `err()`, `some()`, `none()` (preferred over
+  `new`)
+- **Fluent API** — `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `match`,
+  etc.
+- **Practical helpers** — `tryCatch` / `asyncTryCatch` to turn throwing
+  functions into `Result`
 - **Zero dependencies**, strict TypeScript, works great in Deno
 
 ## Installation & Usage
@@ -18,14 +22,14 @@ This library gives you expressive, type-safe error handling and optional values 
 ```typescript
 // Deno
 import {
-  asyncTryCatch,
-  err,
-  none,
-  ok,
-  Result,
-  some,
-  tryCatch,
-} from "jsr:@0xc0de666/ts-rust";
+	asyncTryCatch,
+	err,
+	none,
+	ok,
+	Result,
+	some,
+	tryCatch,
+} from 'jsr:@0xc0de666/ts-rust';
 
 // or local import
 // import { ok, err, some, none } from "./mod.ts";
@@ -34,15 +38,15 @@ import {
 **Recommended style (factories):**
 
 ```typescript
-const user = ok({ id: 1, name: "Ada" });
+const user = ok({ id: 1, name: 'Ada' });
 const missing = none<string>();
-const error = err("Not found");
+const error = err('Not found');
 ```
 
 You can still use the classes directly if you prefer:
 
 ```typescript
-import { Ok, Err, Some, None } from "./mod.ts";
+import { Err, None, Ok, Some } from './mod.ts';
 
 const user = new Ok({ id: 1 });
 ```
@@ -50,25 +54,25 @@ const user = new Ok({ id: 1 });
 ## Quick Start
 
 ```typescript
-import { err, ok, tryCatch } from "./mod.ts";
+import { err, ok, tryCatch } from './mod.ts';
 
 // Happy path
 const result = ok(42)
-  .map((n) => n * 2)
-  .andThen((n) => ok(`The answer is ${n}`));
+	.map((n) => n * 2)
+	.andThen((n) => ok(`The answer is ${n}`));
 
 console.log(result.unwrap()); // "The answer is 84"
 
 // Error path
-const failure = err("boom")
-  .mapErr((e) => `Error: ${e}`);
+const failure = err('boom')
+	.mapErr((e) => `Error: ${e}`);
 
 console.log(failure.unwrapErr()); // "Error: boom"
 
 // Convert throwing code
 const parsed = tryCatch(() => JSON.parse('{"valid": true}'));
 if (parsed.isOk()) {
-  console.log("Parsed:", parsed.unwrap());
+	console.log('Parsed:', parsed.unwrap());
 }
 ```
 
@@ -88,50 +92,50 @@ deno run examples/basic-option.ts
 
 ### `Option<T>`
 
-| Method            | `Some<T>`                  | `None<T>`                     |
-|-------------------|----------------------------|-------------------------------|
-| `isSome()`        | `true`                     | `false`                       |
-| `isNone()`        | `false`                    | `true`                        |
-| `unwrap()`        | returns value              | throws                        |
-| `unwrapOr(default)` | returns value            | returns default               |
-| `unwrapOrElse(fn)`  | returns value            | calls fn                      |
-| `expect(msg)`     | returns value              | throws with msg               |
-| `map(fn)`         | `Some(fn(value))`          | `None`                        |
-| `andThen(fn)`     | `fn(value)`                | `None`                        |
-| `or(other)`       | `this`                     | `other`                       |
-| `orElse(fn)`      | `this`                     | `fn()`                        |
-| `match(onSome, onNone)` | `onSome(value)`        | `onNone()`                    |
-| `flatten()`       | inner Option (if nested)   | `None`                        |
+| Method                  | `Some<T>`                | `None<T>`       |
+| ----------------------- | ------------------------ | --------------- |
+| `isSome()`              | `true`                   | `false`         |
+| `isNone()`              | `false`                  | `true`          |
+| `unwrap()`              | returns value            | throws          |
+| `unwrapOr(default)`     | returns value            | returns default |
+| `unwrapOrElse(fn)`      | returns value            | calls fn        |
+| `expect(msg)`           | returns value            | throws with msg |
+| `map(fn)`               | `Some(fn(value))`        | `None`          |
+| `andThen(fn)`           | `fn(value)`              | `None`          |
+| `or(other)`             | `this`                   | `other`         |
+| `orElse(fn)`            | `this`                   | `fn()`          |
+| `match(onSome, onNone)` | `onSome(value)`          | `onNone()`      |
+| `flatten()`             | inner Option (if nested) | `None`          |
 
 **Factories**
 
 ```ts
-some(42)          // Some<number>
-none<number>()    // None<number>
+some(42); // Some<number>
+none<number>(); // None<number>
 ```
 
 ### `Result<T, E>`
 
-| Method                  | `Ok<T, E>`               | `Err<E, T>`                  |
-|-------------------------|--------------------------|------------------------------|
-| `isOk()`                | `true`                   | `false`                      |
-| `isErr()`               | `false`                  | `true`                       |
-| `unwrap()`              | returns value            | throws                       |
-| `unwrapErr()`           | throws                   | returns error                |
-| `unwrapOrElse(fn)`      | returns value            | calls fn                     |
-| `expect(msg)`           | returns value            | throws with msg              |
-| `map(fn)`               | `Ok(fn(value))`          | `Err(error)`                 |
-| `mapErr(fn)`            | `Ok(value)`              | `Err(fn(error))`             |
-| `andThen(fn)`           | `fn(value)`              | `Err(error)`                 |
-| `ok()`                  | `Some(value)`            | `None`                       |
-| `err()`                 | `None`                   | `Some(error)`                |
-| `match(onOk, onErr)`    | `onOk(value)`            | `onErr(error)`               |
+| Method               | `Ok<T, E>`      | `Err<E, T>`      |
+| -------------------- | --------------- | ---------------- |
+| `isOk()`             | `true`          | `false`          |
+| `isErr()`            | `false`         | `true`           |
+| `unwrap()`           | returns value   | throws           |
+| `unwrapErr()`        | throws          | returns error    |
+| `unwrapOrElse(fn)`   | returns value   | calls fn         |
+| `expect(msg)`        | returns value   | throws with msg  |
+| `map(fn)`            | `Ok(fn(value))` | `Err(error)`     |
+| `mapErr(fn)`         | `Ok(value)`     | `Err(fn(error))` |
+| `andThen(fn)`        | `fn(value)`     | `Err(error)`     |
+| `ok()`               | `Some(value)`   | `None`           |
+| `err()`              | `None`          | `Some(error)`    |
+| `match(onOk, onErr)` | `onOk(value)`   | `onErr(error)`   |
 
 **Factories**
 
 ```ts
-ok(42)                    // Ok<number>
-err("something")          // Err<string>
+ok(42); // Ok<number>
+err('something'); // Err<string>
 ```
 
 ### Utility Functions
@@ -140,8 +144,8 @@ err("something")          // Err<string>
 
 ```ts
 const result = tryCatch(() => {
-  // may throw
-  return JSON.parse(input);
+	// may throw
+	return JSON.parse(input);
 });
 ```
 
@@ -149,9 +153,9 @@ const result = tryCatch(() => {
 
 ```ts
 const result = await asyncTryCatch(async () => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("HTTP " + res.status);
-  return res.json();
+	const res = await fetch(url);
+	if (!res.ok) throw new Error('HTTP ' + res.status);
+	return res.json();
 });
 ```
 

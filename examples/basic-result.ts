@@ -1,36 +1,36 @@
 // examples/basic-result.ts
-import { err, ok, tryCatch } from "../mod.ts";
+import { err, ok, tryCatch } from '../mod.ts';
 
-console.log("=== Basic Result with factories ===\n");
+console.log('=== Basic Result with factories ===\n');
 
 // Using factories (recommended for ergonomics)
 const success = ok(42);
-const failure = err("something went wrong");
+const failure = err('something went wrong');
 
-console.log("success.isOk():", success.isOk()); // true
-console.log("failure.isErr():", failure.isErr()); // true
+console.log('success.isOk():', success.isOk()); // true
+console.log('failure.isErr():', failure.isErr()); // true
 
-console.log("\n--- map / mapErr ---");
+console.log('\n--- map / mapErr ---');
 const doubled = success.map((n) => n * 2);
-console.log("doubled.unwrap():", doubled.unwrap()); // 84
+console.log('doubled.unwrap():', doubled.unwrap()); // 84
 
 const wrappedErr = failure.mapErr((e) => `Error: ${e}`);
-console.log("wrappedErr.unwrapErr():", wrappedErr.unwrapErr()); // "Error: something went wrong"
+console.log('wrappedErr.unwrapErr():', wrappedErr.unwrapErr()); // "Error: something went wrong"
 
-console.log("\n--- andThen (flatMap) ---");
+console.log('\n--- andThen (flatMap) ---');
 const chained = success.andThen((n) => ok(`The answer is ${n}`));
-console.log("chained.unwrap():", chained.unwrap());
+console.log('chained.unwrap():', chained.unwrap());
 
-console.log("\n--- tryCatch helper ---");
+console.log('\n--- tryCatch helper ---');
 const risky = tryCatch(() => {
-  if (Math.random() > 0.3) {
-    return { user: "alice", id: 7 };
-  }
-  throw new Error("Database timeout");
+	if (Math.random() > 0.3) {
+		return { user: 'alice', id: 7 };
+	}
+	throw new Error('Database timeout');
 });
 
 if (risky.isOk()) {
-  console.log("Got user:", risky.unwrap());
+	console.log('Got user:', risky.unwrap());
 } else {
-  console.error("Failed:", risky.unwrapErr());
+	console.error('Failed:', risky.unwrapErr());
 }
