@@ -2,15 +2,11 @@ import { assertEquals, assertThrows } from "@std/assert";
 import {
 	asyncTryCatch,
 	Err,
-	err,
 	None,
-	none,
 	Ok,
-	ok,
 	Option,
 	Result,
 	Some,
-	some,
 	tryCatch,
 } from "./lib.ts";
 
