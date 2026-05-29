@@ -34,7 +34,7 @@
 			"useTabs": true,
 			"indentWidth": 4,
 			"lineWidth": 80,
-			"singleQuote": true
+			"singleQuote": false
 		}
 	},
 	"test": {

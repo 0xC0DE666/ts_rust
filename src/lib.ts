@@ -41,7 +41,7 @@ export class Ok<T, E = never> implements IResult<T, E> {
 	}
 
 	unwrapErr(): never {
-		throw new Error('called `unwrapErr()` on an `Ok` value');
+		throw new Error("called `unwrapErr()` on an `Ok` value");
 	}
 
 	map<U>(op: (val: T) => U): Result<U, E> {
@@ -241,7 +241,7 @@ export class None<T = never> implements IOption<T> {
 	}
 
 	unwrap(): never {
-		throw new Error('called `unwrap()` on a `None` value');
+		throw new Error("called `unwrap()` on a `None` value");
 	}
 
 	unwrapOr(defaultValue: T): T {

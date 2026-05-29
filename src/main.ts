@@ -1,14 +1,14 @@
-import { asyncTryCatch, tryCatch } from './lib.ts';
+import { asyncTryCatch, tryCatch } from "./lib.ts";
 
 const res = tryCatch<number, string>(() => {
-	throw 'Boom!!!';
+	throw "Boom!!!";
 	return 1 + 1;
 });
 
 if (res.isOk()) {
 	console.log(res.unwrap());
 } else {
-	console.error('Error: ' + res.unwrapErr());
+	console.error("Error: " + res.unwrapErr());
 }
 
 const asyncRes = await asyncTryCatch(async () => {

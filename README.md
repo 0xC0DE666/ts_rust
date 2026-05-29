@@ -29,7 +29,7 @@ import {
 	Result,
 	some,
 	tryCatch,
-} from 'jsr:@0xc0de666/ts-rust';
+} from "jsr:@0xc0de666/ts-rust";
 
 // or local import
 // import { ok, err, some, none } from "./mod.ts";
@@ -38,15 +38,15 @@ import {
 **Recommended style (factories):**
 
 ```typescript
-const user = ok({ id: 1, name: 'Ada' });
+const user = ok({ id: 1, name: "Ada" });
 const missing = none<string>();
-const error = err('Not found');
+const error = err("Not found");
 ```
 
 You can still use the classes directly if you prefer:
 
 ```typescript
-import { Err, None, Ok, Some } from './mod.ts';
+import { Err, None, Ok, Some } from "./mod.ts";
 
 const user = new Ok({ id: 1 });
 ```
@@ -54,7 +54,7 @@ const user = new Ok({ id: 1 });
 ## Quick Start
 
 ```typescript
-import { err, ok, tryCatch } from './mod.ts';
+import { err, ok, tryCatch } from "./mod.ts";
 
 // Happy path
 const result = ok(42)
@@ -64,7 +64,7 @@ const result = ok(42)
 console.log(result.unwrap()); // "The answer is 84"
 
 // Error path
-const failure = err('boom')
+const failure = err("boom")
 	.mapErr((e) => `Error: ${e}`);
 
 console.log(failure.unwrapErr()); // "Error: boom"
@@ -72,7 +72,7 @@ console.log(failure.unwrapErr()); // "Error: boom"
 // Convert throwing code
 const parsed = tryCatch(() => JSON.parse('{"valid": true}'));
 if (parsed.isOk()) {
-	console.log('Parsed:', parsed.unwrap());
+	console.log("Parsed:", parsed.unwrap());
 }
 ```
 
@@ -135,7 +135,7 @@ none<number>(); // None<number>
 
 ```ts
 ok(42); // Ok<number>
-err('something'); // Err<string>
+err("something"); // Err<string>
 ```
 
 ### Utility Functions
@@ -154,7 +154,7 @@ const result = tryCatch(() => {
 ```ts
 const result = await asyncTryCatch(async () => {
 	const res = await fetch(url);
-	if (!res.ok) throw new Error('HTTP ' + res.status);
+	if (!res.ok) throw new Error("HTTP " + res.status);
 	return res.json();
 });
 ```

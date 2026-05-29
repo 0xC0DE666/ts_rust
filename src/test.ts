@@ -1,4 +1,4 @@
-import { assertEquals, assertThrows } from '@std/assert';
+import { assertEquals, assertThrows } from "@std/assert";
 import {
 	asyncTryCatch,
 	Err,
@@ -12,11 +12,11 @@ import {
 	Some,
 	some,
 	tryCatch,
-} from './lib.ts';
+} from "./lib.ts";
 
-Deno.test('Result<T, E>', async (t) => {
-	await t.step('Ok<T, E>', async (t) => {
-		await t.step('should create an Ok value', () => {
+Deno.test("Result<T, E>", async (t) => {
+	await t.step("Ok<T, E>", async (t) => {
+		await t.step("should create an Ok value", () => {
 			const ok: Result<number, string> = new Ok(42);
 			assertEquals(ok.isOk(), true);
 			assertEquals(ok.isErr(), false);
@@ -24,39 +24,39 @@ Deno.test('Result<T, E>', async (t) => {
 			assertThrows(
 				() => ok.unwrapErr(),
 				Error,
-				'called `unwrapErr()` on an `Ok` value',
+				"called `unwrapErr()` on an `Ok` value",
 			);
 		});
 
-		await t.step('should map a value', () => {
+		await t.step("should map a value", () => {
 			const ok: Result<number, string> = new Ok(42);
 			const mapped = ok.map((v: number) => v.toString());
 			assertEquals(mapped.isOk(), true);
-			assertEquals(mapped.unwrap(), '42');
+			assertEquals(mapped.unwrap(), "42");
 		});
 
-		await t.step('should not map an error', () => {
+		await t.step("should not map an error", () => {
 			const ok: Result<number, string> = new Ok(42);
 			const mapped = ok.mapErr((e: string) => `Error: ${e}`);
 			assertEquals(mapped.isOk(), true);
 			assertEquals(mapped.unwrap(), 42);
 		});
 
-		await t.step('should chain with andThen', () => {
+		await t.step("should chain with andThen", () => {
 			const ok: Result<number, string> = new Ok(42);
 			const chained = ok.andThen((v: number) => new Ok(v.toString()));
 			assertEquals(chained.isOk(), true);
-			assertEquals(chained.unwrap(), '42');
+			assertEquals(chained.unwrap(), "42");
 		});
 
-		await t.step('should chain with andThen and return Err', () => {
+		await t.step("should chain with andThen and return Err", () => {
 			const ok: Result<number, string> = new Ok(42);
-			const chained = ok.andThen((_v: number) => new Err('failed'));
+			const chained = ok.andThen((_v: number) => new Err("failed"));
 			assertEquals(chained.isErr(), true);
-			assertEquals(chained.unwrapErr(), 'failed');
+			assertEquals(chained.unwrapErr(), "failed");
 		});
 
-		await t.step('should convert to Option', () => {
+		await t.step("should convert to Option", () => {
 			const ok: Result<number, string> = new Ok(42);
 			const option = ok.ok();
 			assertEquals(option.isSome(), true);
@@ -64,99 +64,99 @@ Deno.test('Result<T, E>', async (t) => {
 			assertEquals(ok.err().isNone(), true);
 		});
 
-		await t.step('should expect without throwing on Ok', () => {
+		await t.step("should expect without throwing on Ok", () => {
 			const ok: Result<number, string> = new Ok(42);
-			assertEquals(ok.expect('should not throw'), 42);
+			assertEquals(ok.expect("should not throw"), 42);
 		});
 
-		await t.step('should unwrapOrElse on Ok', () => {
+		await t.step("should unwrapOrElse on Ok", () => {
 			const ok: Result<number, string> = new Ok(42);
 			assertEquals(ok.unwrapOrElse(() => 0), 42);
 		});
 
-		await t.step('should match on Ok', () => {
+		await t.step("should match on Ok", () => {
 			const ok: Result<number, string> = new Ok(42);
 			const result = ok.match(
 				(v) => `ok:${v}`,
 				(e) => `err:${e}`,
 			);
-			assertEquals(result, 'ok:42');
+			assertEquals(result, "ok:42");
 		});
 	});
 
-	await t.step('Err<T, E>', async (t) => {
-		await t.step('should create an Err value', () => {
-			const err: Result<number, string> = new Err('Error');
+	await t.step("Err<T, E>", async (t) => {
+		await t.step("should create an Err value", () => {
+			const err: Result<number, string> = new Err("Error");
 			assertEquals(err.isOk(), false);
 			assertEquals(err.isErr(), true);
-			assertEquals(err.unwrapErr(), 'Error');
+			assertEquals(err.unwrapErr(), "Error");
 			assertThrows(
 				() => err.unwrap(),
 				Error,
-				'called `unwrap()` on an `Err` value: Error',
+				"called `unwrap()` on an `Err` value: Error",
 			);
 		});
 
-		await t.step('should not map a value', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should not map a value", () => {
+			const err: Result<number, string> = new Err("Error");
 			const mapped = err.map((v: number) => v.toString());
 			assertEquals(mapped.isErr(), true);
-			assertEquals(mapped.unwrapErr(), 'Error');
+			assertEquals(mapped.unwrapErr(), "Error");
 		});
 
-		await t.step('should map an error', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should map an error", () => {
+			const err: Result<number, string> = new Err("Error");
 			const mapped = err.mapErr((e: string) => `New Error: ${e}`);
 			assertEquals(mapped.isErr(), true);
-			assertEquals(mapped.unwrapErr(), 'New Error: Error');
+			assertEquals(mapped.unwrapErr(), "New Error: Error");
 		});
 
-		await t.step('should not chain with andThen', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should not chain with andThen", () => {
+			const err: Result<number, string> = new Err("Error");
 			const chained = err.andThen((v: number) => new Ok(v.toString()));
 			assertEquals(chained.isErr(), true);
-			assertEquals(chained.unwrapErr(), 'Error');
+			assertEquals(chained.unwrapErr(), "Error");
 		});
 
-		await t.step('should convert to Option', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should convert to Option", () => {
+			const err: Result<number, string> = new Err("Error");
 			const option = err.err();
 			assertEquals(option.isSome(), true);
-			assertEquals(option.unwrap(), 'Error');
+			assertEquals(option.unwrap(), "Error");
 			assertEquals(err.ok().isNone(), true);
 		});
 
-		await t.step('should expect and throw on Err', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should expect and throw on Err", () => {
+			const err: Result<number, string> = new Err("Error");
 			assertThrows(
-				() => err.expect('custom message'),
+				() => err.expect("custom message"),
 				Error,
-				'custom message',
+				"custom message",
 			);
 		});
 
-		await t.step('should unwrapOrElse on Err', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should unwrapOrElse on Err", () => {
+			const err: Result<number, string> = new Err("Error");
 			assertEquals(err.unwrapOrElse(() => 99), 99);
 		});
 
-		await t.step('should match on Err', () => {
-			const err: Result<number, string> = new Err('Error');
+		await t.step("should match on Err", () => {
+			const err: Result<number, string> = new Err("Error");
 			const result = err.match(
 				(v) => `ok:${v}`,
 				(e) => `err:${e}`,
 			);
-			assertEquals(result, 'err:Error');
+			assertEquals(result, "err:Error");
 		});
 	});
 });
 
-Deno.test('tryCatch', () => {
+Deno.test("tryCatch", () => {
 	const result = tryCatch(() => 42);
 	assertEquals(result.isOk(), true);
 	assertEquals(result.unwrap(), 42);
 
-	const error = new Error('Catch me');
+	const error = new Error("Catch me");
 	const errResult = tryCatch(() => {
 		throw error;
 	});
@@ -164,14 +164,14 @@ Deno.test('tryCatch', () => {
 	assertEquals(errResult.unwrapErr(), error);
 });
 
-Deno.test('asyncTryCatch', async () => {
+Deno.test("asyncTryCatch", async () => {
 	const result = await asyncTryCatch(async () => {
 		return await Promise.resolve(42);
 	});
 	assertEquals(result.isOk(), true);
 	assertEquals(result.unwrap(), 42);
 
-	const error = new Error('Catch me');
+	const error = new Error("Catch me");
 	const errResult = await asyncTryCatch(async () => {
 		return await Promise.reject(error);
 	});
@@ -179,66 +179,66 @@ Deno.test('asyncTryCatch', async () => {
 	assertEquals(errResult.unwrapErr(), error);
 });
 
-Deno.test('Option<T>', async (t) => {
-	await t.step('Some<T>', async (t) => {
-		await t.step('should create a Some value', () => {
+Deno.test("Option<T>", async (t) => {
+	await t.step("Some<T>", async (t) => {
+		await t.step("should create a Some value", () => {
 			const some = new Some(42);
 			assertEquals(some.isSome(), true);
 			assertEquals(some.isNone(), false);
 			assertEquals(some.unwrap(), 42);
 		});
 
-		await t.step('should map a value', () => {
+		await t.step("should map a value", () => {
 			const some = new Some(42);
 			const mapped = some.map((v: number) => v.toString());
 			assertEquals(mapped.isSome(), true);
-			assertEquals(mapped.unwrap(), '42');
+			assertEquals(mapped.unwrap(), "42");
 		});
 
-		await t.step('should chain with andThen', () => {
+		await t.step("should chain with andThen", () => {
 			const some = new Some(42);
 			const chained = some.andThen((v: number) => new Some(v.toString()));
 			assertEquals(chained.isSome(), true);
-			assertEquals(chained.unwrap(), '42');
+			assertEquals(chained.unwrap(), "42");
 		});
 
-		await t.step('should chain with andThen and return None', () => {
+		await t.step("should chain with andThen and return None", () => {
 			const some = new Some(42);
 			const chained = some.andThen((_v: number) => new None());
 			assertEquals(chained.isNone(), true);
 		});
 
-		await t.step('should unwrapOr', () => {
+		await t.step("should unwrapOr", () => {
 			const some = new Some(42);
 			assertEquals(some.unwrapOr(0), 42);
 		});
 	});
 
-	await t.step('None<T>', async (t) => {
-		await t.step('should create a None value', () => {
+	await t.step("None<T>", async (t) => {
+		await t.step("should create a None value", () => {
 			const none = new None();
 			assertEquals(none.isSome(), false);
 			assertEquals(none.isNone(), true);
 			assertThrows(
 				() => none.unwrap(),
 				Error,
-				'called `unwrap()` on a `None` value',
+				"called `unwrap()` on a `None` value",
 			);
 		});
 
-		await t.step('should not map a value', () => {
+		await t.step("should not map a value", () => {
 			const none: Option<number> = new None();
 			const mapped = none.map((v: number) => v.toString());
 			assertEquals(mapped.isNone(), true);
 		});
 
-		await t.step('should not chain with andThen', () => {
+		await t.step("should not chain with andThen", () => {
 			const none: Option<number> = new None();
 			const chained = none.andThen((v: number) => new Some(v.toString()));
 			assertEquals(chained.isNone(), true);
 		});
 
-		await t.step('should unwrapOr with default value', () => {
+		await t.step("should unwrapOr with default value", () => {
 			const none: Option<number> = new None();
 			assertEquals(none.unwrapOr(0), 0);
 		});
