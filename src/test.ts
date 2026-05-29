@@ -1,14 +1,5 @@
 import { assertEquals, assertThrows } from "@std/assert";
-import {
-	asyncTryCatch,
-	Err,
-	None,
-	Ok,
-	Option,
-	Result,
-	Some,
-	tryCatch,
-} from "./lib.ts";
+import { asyncTryCatch, Err, None, Ok, Option, Result, Some, tryCatch } from "./lib.ts";
 
 Deno.test("Result<T, E>", async (t) => {
 	await t.step("Ok<T, E>", async (t) => {

@@ -2,34 +2,23 @@
 
 Rust-like `Result<T, E>` and `Option<T>` for TypeScript / Deno.
 
-This library gives you expressive, type-safe error handling and optional values
-without leaning on `null`/`undefined` or raw `try/catch`.
+This library gives you expressive, type-safe error handling and optional values without leaning on
+`null`/`undefined` or raw `try/catch`.
 
 ## Features
 
 - **`Result<T, E>`** — explicit success (`Ok`) or failure (`Err`)
 - **`Option<T>`** — explicit presence (`Some`) or absence (`None`)
-- **Ergonomic factories** — `ok()`, `err()`, `some()`, `none()` (preferred over
-  `new`)
-- **Fluent API** — `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `match`,
-  etc.
-- **Practical helpers** — `tryCatch` / `asyncTryCatch` to turn throwing
-  functions into `Result`
+- **Ergonomic factories** — `ok()`, `err()`, `some()`, `none()` (preferred over `new`)
+- **Fluent API** — `map`, `andThen`, `mapErr`, `unwrapOr`, `expect`, `match`, etc.
+- **Practical helpers** — `tryCatch` / `asyncTryCatch` to turn throwing functions into `Result`
 - **Zero dependencies**, strict TypeScript, works great in Deno
 
 ## Installation & Usage
 
 ```typescript
 // Deno
-import {
-	asyncTryCatch,
-	err,
-	none,
-	ok,
-	Result,
-	some,
-	tryCatch,
-} from "jsr:@0xc0de666/ts-rust";
+import { asyncTryCatch, err, none, ok, Result, some, tryCatch } from "jsr:@0xc0de666/ts-rust";
 
 // or local import
 // import { ok, err, some, none } from "./mod.ts";
